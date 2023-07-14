@@ -122,7 +122,7 @@ def getNumberOfVerses(book, chapter):  # helps to get number of verses in one ch
 
 
 # *********************************
-# grabbing all the verses in the chapter
+# # grabbing all the verses in the chapter
 def getAllVersesInChapter(book, chapter):
     chapter_counter = time.perf_counter()  # starting a timer for chapter
     page = requests.get(f'{link}{book}.{chapter}.{version}')  # getting html source of the chapter
@@ -149,6 +149,20 @@ def getAllVersesInChapter(book, chapter):
     print(f'{book} {chapter} done in {chapter_over}')
     return allVerses
 
+def getAllVersesInChapter(book, chapter):
+    chapter_counter = time.perf_counter()  # starting a timer for the chapter
+    page = requests.get(f'{link}{book}.{chapter}.{version}')  # getting the HTML source of the chapter
+    page_soup = bs(page.text, 'html.parser')
+    verses = page_soup.find_all(attrs={"class": "verse"})  # finding all divs that have the "verse" class
+    allVerses = {}
+    for verse in verses:
+        verse_number = verse.get("data-usfm")
+        verse_text = verse.find(attrs={"class": "content"}).get_text().strip()
+        allVerses[verse_number] = verse_text
+    chapter_over = time.perf_counter() - chapter_counter
+    print(f'{book} {chapter} done in {chapter_over}')
+    return allVerses
+
 
 def getBook(book):
     current_chapter = 1
@@ -157,7 +171,13 @@ def getBook(book):
     while not current_chapter < last_chapter:
         current_chapter = last_chapter + 1  # at bible.com if chapter number overflows it sends a user back to number 1
         req = requests.get(f'{link}{book}.{current_chapter}.{version}')
-        chapter = re.search(r'\.([0-9]{1,3})\.', req.url).group(1)
+        # chapter_match = re.search(r'\.(\d+)\.', req.url)
+        chapter_match = re.search(r'\.([0-9]{1,3})\.', req.url)
+        if chapter_match:
+            chapter = chapter_match.group(1)
+
+        # chapter = re.search(r'\.([0-9]{1,3})\.', req.url).group(1)
+        # chapter = re.search(r'1\.(.*)', req.url).group(1)
         current_chapter = int(chapter)
         if (
                 current_chapter <= last_chapter):  # if last chapter == current chapter -> there is only one chapter in the book
@@ -167,6 +187,7 @@ def getBook(book):
         bible_book[str(current_chapter)] = verses
 
     return bible_book
+
 
 
 def getCopyRight():
