@@ -4,7 +4,7 @@ import json
 from bs4 import BeautifulSoup as bs
 import time
 import os
-from bible_scraper_supplement import bible_versions_eng, bible_books
+from bible_scraper_supplement import bible_versions_all, bible_books
 
 
 def main():
@@ -15,7 +15,7 @@ James Version :").upper().replace(' ', '').split(','))
         # print(versions)
         for idx, version in enumerate(versions):
             while True:
-                if version in bible_versions_eng:
+                if version in bible_versions_all:
                     break
                 else:
                     print(f'The code "{version}" is incorrect, cannot find such version, try again.')
