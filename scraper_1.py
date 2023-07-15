@@ -67,7 +67,7 @@ def getBibleBooks():
             'name': book[1],
             'code': book[0]
         }
-    print(bible_books)
+    return bible_books
 
 
 #  getting number of chapters in books
