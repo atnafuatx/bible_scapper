@@ -127,11 +127,11 @@ def getAllVersesInChapter(book, chapter):
     chapter_counter = time.perf_counter()  # starting a timer for chapter
     page = requests.get(f'{link}{book}.{chapter}.{version}')  # getting html source of the chapter
     page_soup = bs(page.text, 'html.parser')
-    verses = page_soup.find_all(attrs={"class": "verse"})  # finding all divs that have "verse" class
+    verses = page_soup.find_all(attrs={"class": "ChapterContent_verse__jS6jM"})  # finding all divs that have "verse" class
     verse_counter = 1  # keeping track of current verse
     allVerses = {}
     for verse in verses:
-        content = verse.find_all(attrs={"class":["content","label"]})
+        content = verse.find_all(attrs={"class":["ChapterContent_content__dkdqo","ChapterContent_label__S_AvV"]})
         for text in content:
             verse_text = text.get_text()
 
@@ -153,11 +153,11 @@ def getAllVersesInChapter(book, chapter):
     chapter_counter = time.perf_counter()  # starting a timer for the chapter
     page = requests.get(f'{link}{book}.{chapter}.{version}')  # getting the HTML source of the chapter
     page_soup = bs(page.text, 'html.parser')
-    verses = page_soup.find_all(attrs={"class": "verse"})  # finding all divs that have the "verse" class
+    verses = page_soup.find_all(attrs={"class": "ChapterContent_verse__jS6jM"})  # finding all divs that have the "verse" class
     allVerses = {}
     for verse in verses:
         verse_number = verse.get("data-usfm")
-        verse_text = verse.find(attrs={"class": "content"}).get_text().strip()
+        verse_text = verse.find(attrs={"class": "ChapterContent_content__dkdqo"}).get_text().strip()
         allVerses[verse_number] = verse_text
     chapter_over = time.perf_counter() - chapter_counter
     print(f'{book} {chapter} done in {chapter_over}')
