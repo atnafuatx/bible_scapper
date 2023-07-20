@@ -172,7 +172,7 @@ def getBook(book):
         current_chapter = last_chapter + 1  # at bible.com if chapter number overflows it sends a user back to number 1
         req = requests.get(f'{link}{book}.{current_chapter}.{version}')
         # chapter_match = re.search(r'\.(\d+)\.', req.url)
-        chapter_match = re.search(r'\.([0-9]{1,3})\.', req.url)
+        chapter_match = re.search(r'\.([0-9]{1,2})\.', req.url)
         if chapter_match:
             chapter = chapter_match.group(1)
 
@@ -229,10 +229,10 @@ def getBible():
         f"We are almost done, all verses have been scrapped.\nTime:{bible_over}\nLet's save our bible as Bible{version}.json")
     try:
         try:
-            os.mkdir('bibles')
+            os.mkdir('/content/drive/MyDrive/bibles')
         except:
             print("bibles directory already exists")
-        open(f'bibles/Bible_{version}.json', 'x').write(json.dumps(bible))
+        open(f'/content/drive/MyDrive/bibles/Bible_{version}.json', 'x').write(json.dumps(bible))
         print(f'Success, you Bible_{version}.json has been successfully created\n{stars}')
     except FileExistsError:
         print(f'oops, seems like you already have a file named Bible_{version}.json in this folder\ncannot create it')
