@@ -123,32 +123,48 @@ def getNumberOfVerses(book, chapter):  # helps to get number of verses in one ch
 
 # *********************************
 # # grabbing all the verses in the chapter
+# def getAllVersesInChapter(book, chapter):
+#     chapter_counter = time.perf_counter()  # starting a timer for chapter
+#     page = requests.get(f'{link}{book}.{chapter}.{version}')  # getting html source of the chapter
+#     page_soup = bs(page.text, 'html.parser')
+#     verses = page_soup.find_all(attrs={"class": "ChapterContent_verse__jS6jM"})  # finding all divs that have "verse" class
+#     verse_counter = 1  # keeping track of current verse
+#     allVerses = {}
+#     for verse in verses:
+#         content = verse.find_all(attrs={"class":["ChapterContent_content__dkdqo","ChapterContent_label__S_AvV"]})
+#         for text in content:
+#             verse_text = text.get_text()
+
+#             if verse_text[0:len(str(verse_counter + 1))] == str(
+#                     verse_counter + 1):  # checking the beginning of the verse piece to for a number, if
+#                 verse_counter += 1  # number matches the next next verse counter, then we are on
+#             if verse_text=="#":
+#                 allVerses[f'{verse_counter}'] += " "
+#             elif verse_text[0:len(str(verse_counter))] == str(
+#                     verse_counter):  # a new verse, otherwise it is the another piece of the same
+#                 allVerses[f'{verse_counter}'] = verse_text.lstrip('0123456789').replace('\u2014', '-')
+#             else:
+#                 allVerses[f'{verse_counter}'] += verse_text.replace('\u2014', '-')
+#     chapter_over = time.perf_counter() - chapter_counter
+#     print(f'{book} {chapter} done in {chapter_over}')
+#     return allVerses
 def getAllVersesInChapter(book, chapter):
-    chapter_counter = time.perf_counter()  # starting a timer for chapter
-    page = requests.get(f'{link}{book}.{chapter}.{version}')  # getting html source of the chapter
+    chapter_counter = time.perf_counter()  # starting a timer for the chapter
+    page = requests.get(f'{link}{book}.{chapter}.{version}')  # getting the HTML source of the chapter
     page_soup = bs(page.text, 'html.parser')
-    verses = page_soup.find_all(attrs={"class": "ChapterContent_verse__jS6jM"})  # finding all divs that have "verse" class
-    verse_counter = 1  # keeping track of current verse
+    verses = page_soup.find_all(attrs={"class": "ChapterContent_verse__jS6jM"})  # finding all divs that have the "verse" class
     allVerses = {}
     for verse in verses:
-        content = verse.find_all(attrs={"class":["ChapterContent_content__dkdqo","ChapterContent_label__S_AvV"]})
-        for text in content:
-            verse_text = text.get_text()
-
-            if verse_text[0:len(str(verse_counter + 1))] == str(
-                    verse_counter + 1):  # checking the beginning of the verse piece to for a number, if
-                verse_counter += 1  # number matches the next next verse counter, then we are on
-            if verse_text=="#":
-                allVerses[f'{verse_counter}'] += " "
-            elif verse_text[0:len(str(verse_counter))] == str(
-                    verse_counter):  # a new verse, otherwise it is the another piece of the same
-                allVerses[f'{verse_counter}'] = verse_text.lstrip('0123456789').replace('\u2014', '-')
-            else:
-                allVerses[f'{verse_counter}'] += verse_text.replace('\u2014', '-')
+        verse_number = verse.get("data-usfm")
+        verse_text = verse.find(attrs={"class": "ChapterContent_content__dkdqo"}).get_text().strip()
+        allVerses[verse_number] = verse_text
     chapter_over = time.perf_counter() - chapter_counter
     print(f'{book} {chapter} done in {chapter_over}')
-    return allVerses
 
+    # Introduce a delay of 1-3 seconds before the next request
+    time.sleep(1 + 2 * random.random())  # Adjust the delay range as needed
+
+    return allVerses
 def getAllVersesInChapter(book, chapter):
     chapter_counter = time.perf_counter()  # starting a timer for the chapter
     page = requests.get(f'{link}{book}.{chapter}.{version}')  # getting the HTML source of the chapter
@@ -164,6 +180,29 @@ def getAllVersesInChapter(book, chapter):
     return allVerses
 
 
+# def getBook(book):
+#     current_chapter = 1
+#     last_chapter = 0
+#     bible_book = {}
+#     while not current_chapter < last_chapter:
+#         current_chapter = last_chapter + 1  # at bible.com if chapter number overflows it sends a user back to number 1
+#         req = requests.get(f'{link}{book}.{current_chapter}.{version}')
+#         # chapter_match = re.search(r'\.(\d+)\.', req.url)
+#         chapter_match = re.search(r'\.([0-9]{1,2})\.', req.url)
+#         if chapter_match:
+#             chapter = chapter_match.group(1)
+
+#         # chapter = re.search(r'\.([0-9]{1,3})\.', req.url).group(1)
+#         # chapter = re.search(r'1\.(.*)', req.url).group(1)
+#         current_chapter = int(chapter)
+#         if (
+#                 current_chapter <= last_chapter):  # if last chapter == current chapter -> there is only one chapter in the book
+#             break
+#         last_chapter = current_chapter
+#         verses = getAllVersesInChapter(book, current_chapter)
+#         bible_book[str(current_chapter)] = verses
+
+#     return bible_book
 def getBook(book):
     current_chapter = 1
     last_chapter = 0
@@ -187,7 +226,6 @@ def getBook(book):
         bible_book[str(current_chapter)] = verses
 
     return bible_book
-
 
 
 def getCopyRight():
