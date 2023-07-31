@@ -163,7 +163,7 @@ def getAllVersesInChapter(book, chapter):
     print(f'{book} {chapter} done in {chapter_over}')
 
     # Introduce a delay of 1-3 seconds before the next request
-    time.sleep(1 + 2 * random.random())  # Adjust the delay range as needed
+    time.sleep(1 + 3 * random.random())  # Adjust the delay range as needed
 
     return allVerses
 # def getAllVersesInChapter(book, chapter):
