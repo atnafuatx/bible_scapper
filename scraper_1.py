@@ -167,6 +167,7 @@ def getNumberOfVerses(book, chapter):  # helps to get number of verses in one ch
 
 #     return allVerses
 
+
 def getAllVersesInChapter(book, chapter):
     chapter_counter = time.perf_counter()  # starting a timer for the chapter
     page = requests.get(f'{link}{book}.{chapter}.{version}')  # getting the HTML source of the chapter
@@ -176,14 +177,14 @@ def getAllVersesInChapter(book, chapter):
     for verse in verses:
         verse_number = verse.get("data-usfm")
         verse_element = verse.find(attrs={"class": "ChapterContent_content__dkdqo"})
-        verse_text = verse_element.get_text().strip() if verse_element else None
+        verse_text = " ".join(verse_element.find_all(text=True)).strip() if verse_element else None
         if verse_text is not None and verse_text != "":
             allVerses[verse_number] = verse_text
     chapter_over = time.perf_counter() - chapter_counter
     print(f'{book} {chapter} done in {chapter_over}')
 
     # Introduce a delay of 1-3 seconds before the next request
-    time.sleep(1 + 3 * random.random())  # Adjust the delay range as needed
+    time.sleep(1 + 2 * random.random())  # Adjust the delay range as needed
 
     return allVerses
 # def getAllVersesInChapter(book, chapter):
