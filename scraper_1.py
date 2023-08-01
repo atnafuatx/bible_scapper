@@ -175,15 +175,15 @@ def getAllVersesInChapter(book, chapter):
     page_soup = bs(page.text, 'html.parser')
     verses = page_soup.find_all(attrs={"class": "ChapterContent_verse__57FIw"})  # finding all divs that have the "verse" class
     allVerses = {}
-    for i, verse in enumerate(verses):
+
+    for verse in verses:
         verse_number = verse.get("data-usfm")
         verse_element = verse.find(attrs={"class": "ChapterContent_content__RrUqA"})
         verse_text = " ".join(verse_element.find_all(text=True)).strip() if verse_element else None
+
         if verse_text is not None and verse_text != "":
             allVerses[verse_number] = verse_text
-        elif i > 0:
-            # If the current verse is empty, but there was a previous verse with text, break the loop
-            break
+
     chapter_over = time.perf_counter() - chapter_counter
     print(f'{book} {chapter} done in {chapter_over}')
 
