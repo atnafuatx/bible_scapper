@@ -149,6 +149,24 @@ def getNumberOfVerses(book, chapter):  # helps to get number of verses in one ch
 #     chapter_over = time.perf_counter() - chapter_counter
 #     print(f'{book} {chapter} done in {chapter_over}')
 #     return allVerses
+# def getAllVersesInChapter(book, chapter):
+#     chapter_counter = time.perf_counter()  # starting a timer for the chapter
+#     page = requests.get(f'{link}{book}.{chapter}.{version}')  # getting the HTML source of the chapter
+#     page_soup = bs(page.text, 'html.parser')
+#     verses = page_soup.find_all(attrs={"class": "ChapterContent_verse__jS6jM"})  # finding all divs that have the "verse" class
+#     allVerses = {}
+#     for verse in verses:
+#         verse_number = verse.get("data-usfm")
+#         verse_text = verse.find(attrs={"class": "ChapterContent_content__dkdqo"}).get_text().strip()
+#         allVerses[verse_number] = verse_text
+#     chapter_over = time.perf_counter() - chapter_counter
+#     print(f'{book} {chapter} done in {chapter_over}')
+
+#     # Introduce a delay of 1-3 seconds before the next request
+#     time.sleep(1 + 3 * random.random())  # Adjust the delay range as needed
+
+#     return allVerses
+
 def getAllVersesInChapter(book, chapter):
     chapter_counter = time.perf_counter()  # starting a timer for the chapter
     page = requests.get(f'{link}{book}.{chapter}.{version}')  # getting the HTML source of the chapter
@@ -157,8 +175,10 @@ def getAllVersesInChapter(book, chapter):
     allVerses = {}
     for verse in verses:
         verse_number = verse.get("data-usfm")
-        verse_text = verse.find(attrs={"class": "ChapterContent_content__dkdqo"}).get_text().strip()
-        allVerses[verse_number] = verse_text
+        verse_element = verse.find(attrs={"class": "ChapterContent_content__dkdqo"})
+        verse_text = verse_element.get_text().strip() if verse_element else None
+        if verse_text is not None and verse_text != "":
+            allVerses[verse_number] = verse_text
     chapter_over = time.perf_counter() - chapter_counter
     print(f'{book} {chapter} done in {chapter_over}')
 
