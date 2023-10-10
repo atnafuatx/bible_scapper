@@ -44,7 +44,7 @@ global versions_needed
 
 def getVersions():  # fetches all the codes and versions avaliable for english at bible.com
     versions = []
-    with open('src/versions.html', 'r') as file:
+    with open('src/versionss.html', 'r') as file:
         soup = bs(file.read(), 'html.parser')
     versions_raw = soup.find_all('a')
     for version in versions_raw:
